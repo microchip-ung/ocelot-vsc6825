@@ -1,0 +1,195 @@
+
+This file defines texts. The file is converted to .c and .h files by the
+tool txt2c.pl. The .c and .h files are included in the files txt.c and txt.h.
+
+Every time a change has been made in this file, the txt2c.pl must be run. A
+bat file, maketxt.bat, exists for that purpose.
+
+Texts are defined in groups with the following names:
+      "hlp" for help texts
+      "cmd" for texts used as commands or options
+      "std" for standard texts used for printing.
+
+A text group must be encapsulated in the delimiters
+%START_TXTGROUP(<group name>) or %START_CMDGROUP(<group name>)
+and
+%END_TXTGROUP
+
+The delimiters must be placed at the start of the line.
+
+A normal text group (START_TXTGROUP) takes two parameters for each text:
+- a text id that can be used to refer to the text
+- the text string.
+
+The two parameters must be separated by ',' and the text string must be followed
+by a ',' (even if it is the last text in the group).
+A text string must be encapsulated in '"', e.g. "abc". It may be composed of 
+several strings on separate lines like
+"abc"
+"def"
+"g",
+It is the ',' that ends the text string. It can be utilized for composing a text
+dependant on compiler switches. If a text is constructed in this way, it is 
+recommended to end the text with an empty string "" on the last line, e.g.
+"abc",
+#if defined(compiler_switch)
+"def"
+#endif
+"",
+
+Lines starting with a "#" character are written unchanged to the .c and .h files.
+
+Lines outside the text group delimiters are ignored.
+
+A command text group (START_CMDGROUP) takes an additional parameter, namely
+the minimum number of characters required for a text match. The number must 
+follow right after the text string on the same line separated by a ',', and it
+must be followed by a ',' (even if it is the last text in the group).
+
+
+/* ************************************************************************ **
+ *
+ *
+ * Command and option texts
+ *
+ *
+ *
+ * ************************************************************************ */
+
+%START_CMDGROUP(cmd)
+#if LUTON_UNMANAGED_CONF_IF
+CMD_TXT_NO_CONFIG,              "CONFIG",                     6,
+CMD_TXT_NO_MAC,                 "MAC",                        3,
+CMD_TXT_NO_SAVE,                "SAVE",                       4,
+#endif
+CMD_TXT_NO_END,                 "END",                        3,
+%END_GROUP
+
+/* ************************************************************************ **
+ *
+ *
+ * Standard texts
+ *
+ *
+ *
+ * ************************************************************************ */
+
+%START_TXTGROUP(std)
+
+#if TRANSIT_LLDP
+TXT_NO_CHIP_NAME,                 "SparX-III",
+
+#if 0
+#if !defined(LUTON26_L10) && !defined(LUTON26_L16)
+TXT_NO_SWITCH_DESCRIPTION,        " - 25 Port Gigabit Ethernet Switch",
+#elif !defined(LUTON26_L10)
+TXT_NO_SWITCH_DESCRIPTION,        " - 16 Port Gigabit Ethernet Switch",
+#else
+TXT_NO_SWITCH_DESCRIPTION,        " - 10 Port Gigabit Ethernet Switch",
+#endif
+#endif
+
+#if !defined(LUTON26_L10) && !defined(LUTON26_L16)
+TXT_NO_SWITCH_NAME,               "VSC7422 25 Port Switch",
+#elif !defined(LUTON26_L10)
+TXT_NO_SWITCH_NAME,               "VSC7421 16 Port Switch",
+#else
+TXT_NO_SWITCH_NAME,               "VSC7420 10 Port Switch",
+#endif
+#endif
+
+#if TRANSIT_LLDP
+#if UNMANAGED_LLDP_DEBUG_IF
+#if 0
+TXT_NO_LLDP_OPTIONAL_TLVS,        "Optional TLVs",
+#endif
+TXT_NO_LLDP_REMOTEMIB_HDR,        "Port    Chassis ID                Port ID                System Name\r\n",
+TXT_NO_LLDP_CHASSIS_ID,           "Chassis ID:",
+TXT_NO_LLDP_CHASSIS_TYPE,         "Chassis Type:",
+TXT_NO_LLDP_PORT_TYPE,            "Port Type:",
+TXT_NO_LLDP_PORT_ID,              "Port ID",
+TXT_NO_LLDP_SYSTEM_NAME,          "System Name:",
+TXT_NO_LLDP_SYSTEM_DESCR,         "System Description:",
+TXT_NO_LLDP_PORT_DESCR,           "Port Description:",
+TXT_NO_LLDP_SYSTEM_CAPA,          "System Capabilities:",
+TXT_NO_LLDP_MGMT_ADDR,            "Management Address:",
+#if 0
+TXT_NO_LLDP_STATHDR1,             "         Tx           Recieved Frames                   TLVs",
+TXT_NO_LLDP_STATHDR2,             "Port   Frames   Total   Errors   Discards   Discards   Unrecog.  Org.    Ageouts",
+#endif
+#if UNMANAGED_EEE_DEBUG_IF
+TXT_NO_EEE_STAT,                  "    Tx_tw   Rx_tw   Fb Rx_tw   Echo Tx_tw   Echo Rx_tw   Resolved Tx   Resolved Rx\r\n",
+#endif
+TXT_NO_LLDP_NO_ENTRIES,           "No entries found",
+TXT_NO_LLDP_LOCAL_PORT,           "Local port",
+#endif
+#endif /* TRANSIT_LLDP */
+
+#if TRANSIT_VERIPHY
+#if UNMANAGED_TRANSIT_VERIPHY_DEBUG_IF
+TXT_NO_VERIPHY_OK,                "OK   ",
+TXT_NO_VERIPHY_OPEN,              "Open ",
+TXT_NO_VERIPHY_SHORT,             "Short",
+TXT_NO_VERIPHY_ABNORMAL,          "Abnrm",
+TXT_NO_VERIPHY_XA,                "XA   ",
+TXT_NO_VERIPHY_XB,                "XB   ",
+TXT_NO_VERIPHY_XC,                "XC   ",
+TXT_NO_VERIPHY_XD,                "XD   ",
+TXT_NO_VERIPHY_XCPLA,             "XCplA",
+TXT_NO_VERIPHY_XCPLB,             "XCplB",
+TXT_NO_VERIPHY_XCPLC,             "XCplC",
+TXT_NO_VERIPHY_XCPLD,             "XCplD",
+TXT_NO_VERIPHY_FAULT,             "Fault",
+TXT_NO_VERIPHY_STAT_HDR,          "Port  Valid  LenA  LenB  LenC  LenD  StatA  StatB  StatC  StatD\r\n",
+
+TXT_NO_VERIPHY_PROPER,            "Proper",
+TXT_NO_VERIPHY_ABNORMAL_WEB,      "Abnormal termination",
+TXT_NO_VERIPHY_XPAIR_WEB,         "Cross-pair short to pair ",
+TXT_NO_VERIPHY_XPAIR_CPL_WEB,     "Abnormal cross-pair coupling with pair ",
+#endif
+#endif
+
+TXT_NO_WRONG_CHIP_ID,             "Wrong Chip ID",
+
+#if UNMANAGED_PORT_STATISTICS_IF
+TXT_NO_RX_PREFIX,                 "Rx ",
+TXT_NO_TX_PREFIX,                 "Tx ",
+TXT_NO_PACKETS,                   "Packets:",
+TXT_NO_OCTETS,                    "Octets:",
+TXT_NO_HI_PACKETS,                "High Priority Packets:",
+TXT_NO_LO_PACKETS,                "Low Priority Packets:",
+TXT_NO_BC_PACKETS,                "Broadcast:",
+TXT_NO_MC_PACKETS,                "Multicast:",
+TXT_NO_64_BYTES,                  "64 Bytes:",
+TXT_NO_65_BYTES,                  "65-127 Bytes:",
+TXT_NO_128_BYTES,                 "128-255 Bytes:",
+TXT_NO_256_BYTES,                 "256-511 Bytes:",
+TXT_NO_512_BYTES,                 "512-1023 Bytes:",
+TXT_NO_1024_BYTES,                "1024- Bytes:",
+TXT_NO_CRC_ALIGN,                 "CRC/Alignment:",
+TXT_NO_COLLISIONS,                "Collisions:",
+TXT_NO_UNDERSIZE,                 "Undersize:",
+TXT_NO_DROPS,                     "Drops:",
+TXT_NO_OVERSIZE,                  "Oversize:",
+TXT_NO_FRAGMENTS,                 "Fragments:",
+TXT_NO_JABBERS,                   "Jabbers:",
+TXT_NO_CAT_DROPS,                 "Classifier Drops:",
+TXT_NO_RX_TOTAL,                  "Receive Total",
+TXT_NO_TX_TOTAL,                  "Transmit Total",
+TXT_NO_RX_SIZE,                   "Receive Size Counters",
+TXT_NO_TX_SIZE,                   "Transmit Size Counters",
+TXT_NO_RX_ERROR,                  "Receive Error Counters",
+TXT_NO_TX_ERROR,                  "Transmit Error Counters",
+TXT_NO_BM_PACKETS,                "Broad- and Multicast",
+TXT_NO_ERR_PACKETS,               "Error Packets",
+TXT_NO_OVERFLOW,                  "Overflow:",
+TXT_NO_AGED,                      "Aged:",
+TXT_NO_PAUSE,                     "Pause:",
+TXT_NO_MAC_CTRL,                  "MAC Ctrl:",
+TXT_NO_DASH,                      "-",
+#endif
+
+TXT_NO_TEMPERATURE,               "Temperature",
+TXT_NO_COMPILE_DATE,              "Compile Date: ",
+
+%END_GROUP
