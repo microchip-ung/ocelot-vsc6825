@@ -1,0 +1,21 @@
+# Keil listing file
+lst
+
+# Keil project file
+prj/*.bak
+prj/*.uvopt
+prj/*.uvgui.*
+
+# Build output
+obj/*
+
+# Tags and editor support
+ID
+TAGS
+tags
+.clang_complete
+
+# tmp files
+*~
+*.swp
+.ccache
