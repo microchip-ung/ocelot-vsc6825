@@ -304,7 +304,7 @@ get_status_again:
     /* Return partner advertisement ability */
     lp_adv_ability = VTSS_X_DEV_PCS1G_CFG_STATUS_PCS1G_ANEG_STATUS_LP_ADV_ABILITY(value);
     if (MAC_IF_SGMII == mac_if) {
-        uchar sgmii_link = BF((1 << 15), lp_adv_ability);
+        uchar sgmii_link = (lp_adv_ability & 0x8000) ? 1 : 0;
 
         lm = ((lp_adv_ability >> 10) & 3);
         if (VTSS_BOOL(lp_adv_ability & (1 << 12))) {
