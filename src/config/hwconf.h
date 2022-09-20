@@ -252,34 +252,19 @@ sbit GPR7     = 0x87;
 /*
 ** Define HW_LED_TOWER_PRESENT when the LED tower is present.
 */
-#if defined(LUTON26_L10) || defined(LUTON26_L16) || defined(LUTON26_L25)
-#define HW_LED_TOWER_PRESENT
+#if defined(HW_LED_TOWER_PRESENT)
+    #error "Not defined yet: HW_LED_TOWER_GPIO_PORT"
 #endif
 
 #if defined(HW_LED_TOWER_PRESENT)
-    #if defined(LUTON26_L10) || defined(LUTON26_L16) || defined(LUTON26_L25)
-        #define HW_LED_TOWER_GPIO_PORT  16
-    #else
-        #error "Not defined yet: HW_LED_TOWER_GPIO_PORT"
-    #endif
-#endif
-
-#if defined(HW_LED_TOWER_PRESENT)
-    #if defined(LUTON26_L10) || defined(LUTON26_L16) || defined(LUTON26_L25)
-        #define HW_LED_TOWER_GPIO_PORT  16
-    #else
-        #error "Not defined yet: HW_LED_TOWER_GPIO_PORT"
-    #endif
+    #error "Not defined yet: HW_LED_TOWER_GPIO_PORT"
 #endif
 
 /*
 ** Define SFP TX DISABLE GPIO pin when the SFP ports is supported on the board.
 ** (needs to refer to hardware schematic)
 */
-#if defined(LUTON26_L25)
-    #define GPIO_SFP_TXDISABLE      15
-
-#elif defined(FERRET_F11)
+#if defined(FERRET_F11)
     // SFP1
     #define SFP1_CHIP_PORT          8
     #define GPIO_SFP1_TXDISABLE     5
@@ -322,7 +307,7 @@ sbit GPR7     = 0x87;
 ** Define whether a red/green front LED is present.
 ** Set FRONT_LED_PRESENT to 1, if present, otherwise set it to 0
 */
-#if !defined(BRINGUP) && (defined(FERRET_F11) || defined(FERRET_F10P) || defined(FERRET_F5) || defined(FERRET_F4P) || defined(LUTON26_L10) || defined(LUTON26_L16) || defined(LUTON26_L25))
+#if !defined(BRINGUP) && (defined(FERRET_F11) || defined(FERRET_F10P) || defined(FERRET_F5) || defined(FERRET_F4P))
 #define FRONT_LED_PRESENT  1
 #else
 #define FRONT_LED_PRESENT  0
@@ -363,33 +348,6 @@ sbit GPR7     = 0x87;
 #define MAX_FRAME_SIZE VTSS_MAX_FRAME_LENGTH_STANDARD
 #endif // JUMBO
 
-
-
-/****************************************************************************
- *
- *
- * VSC7421 (Luton26 L16) MUX Mode
- *
- *
- ****************************************************************************/
-#if defined(LUTON26_L16)
-
-#define LUTON26_L16_MUX_MODE    (1) /* Available options: 0 or 1 */
-
-#if LUTON26_L16_MUX_MODE == 0
-/**
- * VSC7421 QSGMII mode with external 4 port PHY.
- *
- * eg. In current code base, VSC8514 (ELISE) is supported.
- *     Turne on ELISE in phyconf.h and this option, then
- *     L16 of Luton26 can support 16 port copper.
- */
-#define LUTON26_L16_QSGMII_EXT_PHY
-#endif
-
-#endif /* defined(LUTON26_L16) */
-
-
 /****************************************************************************
  *
  *
@@ -399,12 +357,9 @@ sbit GPR7     = 0x87;
  ****************************************************************************/
 
 /* Define if on some ports, MAC to SerDes directly */
-#if defined(VTSS_ARCH_OCELOT) || defined(LUTON26_L25)
+#if defined(VTSS_ARCH_OCELOT)
     #define MAC_TO_MEDIA                        1
     #define TRANSIT_SFP_DETECT                  1
-#elif defined(LUTON26_L16)
-    #define MAC_TO_MEDIA                        1
-    #define TRANSIT_SFP_DETECT                  0
 #else
     #define MAC_TO_MEDIA                        0
     #define TRANSIT_SFP_DETECT                  0
@@ -422,71 +377,7 @@ sbit GPR7     = 0x87;
  *
  *
  ****************************************************************************/
-#if defined(LUTON26_L25)
-/*
-** Define mapping between Luton25 port numbers and logical port numbers.
-** For each Luton25 port specify the logical port number and for each
-** logical port specify the front port number.
-
-Luton25 port number:
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
-  -------------------------------------------------------------------------- */
-#define CPORT_MAPTO_UPORT  \
-    {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 0, 25 }
-
-/* Logic port number:
-  1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
-  ---------------------------------------------------------------------- */
-#define UPORT_MAPTO_CPORT \
-    { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25 }
-
-#elif defined(LUTON26_L16)
-/*
-** Define mapping between Luton16 port numbers and logical port numbers.
-** For each Luton16 port specify the logical port number and for each
-** logical port specify the front port number.
-** Option 0
-Luton16 port number:
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,xx,xx,xx,xx,16,xx,xx,19,xx,xx,xx,xx,24,25
-  -------------------------------------------------------------------------- */
-#ifdef LUTON26_L16_QSGMII_EXT_PHY
-#define CPORT_MAPTO_UPORT  \
-    { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-#else
-#define CPORT_MAPTO_UPORT  \
-     { 1, 2, 3, 4, 5, 6, 7, 8, 9,10, 11, 12, 0, 0, 0, 0, 13, 0, 0, 14, 0, 0, 0, 0, 15, 16 }
-#endif /* LUTON26_L16_QSGMII_EXT_PHY */
-
-/* Logic port number:
-  1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16
-  ---------------------------------------------- */
-#ifdef LUTON26_L16_QSGMII_EXT_PHY
-#define UPORT_MAPTO_CPORT \
-    { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
-#else
-#define UPORT_MAPTO_CPORT \
-    { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 19, 24, 25 }
-#endif /* LUTON26_L16_QSGMII_EXT_PHY */
-
-#elif defined(LUTON26_L10)
-/*
-** Define mapping between Luton10 port numbers and logical port numbers.
-** For each Luton10 port specify the logical port number and for each
-** logical port specify the front port number.
-
-Luton10 port number:
-  0, 1, 2, 3, 4, 5, 6, 7, x, x,xx,xx,xx,xx,xx,xx,xx,xx,xx,xx,xx,xx,xx,xx,24,25
-  -------------------------------------------------------------------------- */
-#define CPORT_MAPTO_UPORT  \
-    { 1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 10 }
-
-/* Logic port number:
-  1, 2, 3, 4, 5, 6, 7, 8, 9,10
-  ---------------------------------------------- */
-#define UPORT_MAPTO_CPORT \
-    { 0, 1, 2, 3, 4, 5, 6, 7,24, 25 }
-
-#elif defined(FERRET_F11)
+#if defined(FERRET_F11)
 /*
 ** Define the mapping from chip port (zero-based) to user port (one-based).
    -------------------------------------------
