@@ -198,13 +198,7 @@
 /*
 ** Maximum number of ports in a link aggregation group
 */
-
-
-#if defined(LUTON26_L25)
-#define MAX_NO_OF_AGGR_PORTS 16
-#elif defined(LUTON26_L10) || defined(LUTON26_L16)
-#define MAX_NO_OF_AGGR_PORTS 10
-#elif defined(FERRET_F11) || defined(FERRET_F10P)
+#if defined(FERRET_F11) || defined(FERRET_F10P)
 #define MAX_NO_OF_AGGR_PORTS 10
 #elif defined(FERRET_F5) || defined(FERRET_F4P)
 #define MAX_NO_OF_AGGR_PORTS 4

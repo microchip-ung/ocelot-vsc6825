@@ -149,10 +149,6 @@ extern const char txt_TXT_NO_COMPILE_DATE [];
 typedef enum {
 #if TRANSIT_LLDP
     TXT_NO_CHIP_NAME,
-#if defined(VTSS_ARCH_LUTON26)
-    TXT_NO_SWITCH_DESCRIPTION,
-    TXT_NO_SWITCH_NAME,
-#endif
 #if UNMANAGED_LLDP_DEBUG_IF
 #if 0
     TXT_NO_LLDP_OPTIONAL_TLVS,
