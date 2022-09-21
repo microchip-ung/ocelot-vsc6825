@@ -52,13 +52,7 @@ const struct {
 #if TRANSIT_LLDP
 const char txt_TXT_NO_CHIP_NAME [] = {"SparX-III"};
 
-#if defined(LUTON26_L25)
-const char txt_TXT_NO_SWITCH_DESCRIPTION [] = {" - 25 Port Gigabit Ethernet Switch"};
-#elif defined(LUTON26_L16)
-const char txt_TXT_NO_SWITCH_DESCRIPTION [] = {" - 16 Port Gigabit Ethernet Switch"};
-#elif defined(LUTON26_L10)
-const char txt_TXT_NO_SWITCH_DESCRIPTION [] = {" - 10 Port Gigabit Ethernet Switch"};
-#elif defined(FERRET_F11)
+#if defined(FERRET_F11)
 const char txt_TXT_NO_SWITCH_DESCRIPTION [] = {" - 11 Port Gigabit Ethernet Switch"};
 #elif defined(FERRET_F10P)
 const char txt_TXT_NO_SWITCH_DESCRIPTION [] = {" - 10 Port Gigabit Ethernet Switch"};
@@ -70,20 +64,14 @@ const char txt_TXT_NO_SWITCH_DESCRIPTION [] = {" - 4 Port Gigabit Ethernet Switc
 const char txt_TXT_NO_SWITCH_DESCRIPTION [] = {" - Unknown switch description"};
 #endif
 
-#if defined(LUTON26_L25)
-const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7422 25 Port Switch"};
-#elif defined(LUTON26_L16)
-const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7421 16 Port Switch"};
-#elif defined(LUTON26_L10)
-const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7420 10 Port Switch"};
-#elif defined(FERRET_F11)
-const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7412 11 Port Switch"};
+#if defined(FERRET_F11)
+const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7512 11 Port Switch"};
 #elif defined(FERRET_F10P)
-const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7412 10 Port Switch"};
+const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7512 10 Port Switch"};
 #elif defined(FERRET_F5)
-const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7411 5 Port Switch"};
+const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7511 5 Port Switch"};
 #elif defined(FERRET_F4P)
-const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7411 4 Port Switch"};
+const char txt_TXT_NO_SWITCH_NAME [] = {"VSC7511 4 Port Switch"};
 #else
 const char txt_TXT_NO_SWITCH_NAME [] = {"Unknown switch name"};
 #endif

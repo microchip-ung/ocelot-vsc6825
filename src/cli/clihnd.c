@@ -1948,9 +1948,6 @@ static void print_phy_model_2_txt(unsigned char model)
         case PHY_MODEL_VTSS_8664:
             print_n_str("ENZO", 12);
         break;
-        case PHY_MODEL_VTSS_7422:
-            print_n_str("LUTON26", 12);
-        break;
         case PHY_MODEL_VTSS_8512:
             print_n_str("ATOM", 12);
         break;
