@@ -194,7 +194,8 @@ static vtss_rc vtss_phy_rd_wr_masked(BOOL                 read,
 
     return rc;
 }
-vtss_rc vtss_phy_wr_page(const vtss_port_no_t port_no,
+
+static vtss_rc vtss_phy_wr_page(const vtss_port_no_t port_no,
                          const u16            page,
                          const u32            addr,
                          const u16            value)

@@ -456,11 +456,13 @@ void phy_page_std (vtss_port_no_t port_no) {
 void phy_page_ext (vtss_port_no_t port_no) {
     phy_write(port_no, 31, 1);
 }
+#endif  // VTSS_ATOM12_B || VTSS_ATOM12_C || VTSS_ATOM12_D || VTSS_TESLA
 
+#if VTSS_ATOM12_B || VTSS_ATOM12_C || VTSS_ATOM12_D
 void phy_page_ext2 (vtss_port_no_t port_no) {
     phy_write(port_no, 31, 2);
 }
-#endif  // VTSS_ATOM12_B || VTSS_ATOM12_C || VTSS_ATOM12_D || VTSS_TESLA
+#endif // VTSS_ATOM12_B || VTSS_ATOM12_C || VTSS_ATOM12_D
 
 #if VTSS_QUATTRO || VTSS_SPYDER || VTSS_ELISE || VTSS_TESLA || VTSS_ATOM12
 void phy_page_gp (vtss_port_no_t port_no) {
