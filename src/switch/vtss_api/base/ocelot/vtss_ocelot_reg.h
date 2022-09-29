@@ -77,5 +77,54 @@
 #define IS1_ACTION_TYPE_SMAC_SIP4 1
 #define IS1_ACTION_TYPE_SMAC_SIP6 2
 
-#endif /* _LUTON26_REG_H */
+/* IS2 half key - IP4_TCP_UDP/IP4_OTHER common */
+//srvl_vcap_key_bit_set(data, IS2_HKO_L3_FRAGMENT, fragment);
+//srvl_vcap_key_bit_set(data, IS2_HKO_L3_FRAG_OFS_GT0, VTSS_VCAP_BIT_ANY);
+#define VTSS_CHIP_PORTS      11
+#define IS2_HKO_TYPE          0
+#define IS2_HKL_TYPE          4
+#define IS2_HKO_FIRST         (IS2_HKO_TYPE + IS2_HKL_TYPE)
+#define IS2_HKL_FIRST         1
+#define IS2_HKO_PAG           (IS2_HKO_FIRST + IS2_HKL_FIRST)
+#define IS2_HKL_PAG           8
+#define IS2_HKO_IGR_PORT_MASK (IS2_HKO_PAG + IS2_HKL_PAG)
+#define IS2_HKL_IGR_PORT_MASK (VTSS_CHIP_PORTS + 1)
+#define IS2_HKO_SERVICE_FRM   (IS2_HKO_IGR_PORT_MASK + IS2_HKL_IGR_PORT_MASK)
+#define IS2_HKL_SERVICE_FRM   1
+#define IS2_HKO_HOST_MATCH    (IS2_HKO_SERVICE_FRM + IS2_HKL_SERVICE_FRM)
+#define IS2_HKL_HOST_MATCH    1
+#define IS2_HKO_L2_MC         (IS2_HKO_HOST_MATCH + IS2_HKL_HOST_MATCH)
+#define IS2_HKL_L2_MC         1
+#define IS2_HKO_L2_BC         (IS2_HKO_L2_MC + IS2_HKL_L2_MC)
+#define IS2_HKL_L2_BC         1
+#define IS2_HKO_VLAN_TAGGED   (IS2_HKO_L2_BC + IS2_HKL_L2_BC)
+#define IS2_HKL_VLAN_TAGGED   1
+#define IS2_HKO_VID           (IS2_HKO_VLAN_TAGGED + IS2_HKL_VLAN_TAGGED)
+#define IS2_HKL_VID           12
+#define IS2_HKO_DEI           (IS2_HKO_VID + IS2_HKL_VID)
+#define IS2_HKL_DEI           1
+#define IS2_HKO_PCP           (IS2_HKO_DEI + IS2_HKL_DEI)
+#define IS2_HKL_PCP           3
+
+#define IS2_HKL_PCP             3
+#define IS2_HKO_L2_DMAC         (IS2_HKO_PCP + IS2_HKL_PCP)
+#define IS2_HKO_IP4             IS2_HKO_L2_DMAC
+#define IS2_HKL_IP4             1
+#define IS2_HKO_L3_FRAGMENT     (IS2_HKO_IP4 + IS2_HKL_IP4)
+#define IS2_HKL_L3_FRAGMENT     1
+#define IS2_HKO_L3_FRAG_OFS_GT0 (IS2_HKO_L3_FRAGMENT + IS2_HKL_L3_FRAGMENT)
+#define IS2_HKL_L3_FRAG_OFS_GT0 1
+#define IS2_HKO_L3_OPTIONS      (IS2_HKO_L3_FRAG_OFS_GT0 + IS2_HKL_L3_FRAG_OFS_GT0)
+#define IS2_HKL_L3_OPTIONS      1
+#define IS2_HKO_L3_TTL_GT0      (IS2_HKO_L3_OPTIONS + IS2_HKL_L3_OPTIONS)
+#define IS2_HKL_L3_TTL_GT0      1
+#define IS2_HKO_L3_TOS          (IS2_HKO_L3_TTL_GT0 + IS2_HKL_L3_TTL_GT0)
+#define IS2_HKL_L3_TOS          8
+#define IS2_HKO_L3_IP4_DIP      (IS2_HKO_L3_TOS + IS2_HKL_L3_TOS)
+#define IS2_HKL_L3_IP4_DIP      32
+#define IS2_HKO_L3_IP4_SIP      (IS2_HKO_L3_IP4_DIP + IS2_HKL_L3_IP4_DIP)
+#define IS2_HKL_L3_IP4_SIP      32
+#define IS2_HKO_DIP_EQ_SIP      (IS2_HKO_L3_IP4_SIP + IS2_HKL_L3_IP4_SIP)
+#define IS2_HKL_DIP_EQ_SIP      1
+#endif /* _VTSS_OCELOT_REG_H_ */
 

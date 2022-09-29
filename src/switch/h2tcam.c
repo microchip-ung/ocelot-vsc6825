@@ -77,6 +77,7 @@ typedef enum {
     IS2_HALF_ETH_PTP_MSG_TYPE,
     IS2_HALF_ETH_TWO_STEP,
     IS2_HALF_IPV4_IS_IPV4,
+    IS2_HALF_IPV4_IS_FRAG,
     IS2_HALF_IPV4_UDP_TYPE,
     IS2_HALF_IPV4_DPORT,
     IS2_HALF_IPV4_PTP_MSG_TYPE,
@@ -290,7 +291,7 @@ void h2_tcam_e2e_tc_get(u16 entry_id,tcam_data_conf_t *conf)
 
 void h2_tcam_e2e_tc_set(tcam_e2e_tc_t ace_conf) 
 {
-    if ( is2_entry_id <= MAX_ACE_LIMIT ) { 
+    if ( is2_entry_id <= MAX_ACE_LIMIT ) {
         if (ace_conf == TCAM_E2E_TC_PTP_ETH) {
             h2tcam_add_is2_ptp_ethernet(is2_entry_id++,ace_conf);
         } else if (ace_conf == TCAM_E2E_TC_PTP_IP) {
@@ -382,6 +383,10 @@ static void get_offset_len_par(is2_conf_param_t type,u16 *offset)
             break;
         case IS2_HALF_IPV4_IS_IPV4:
             offset[0] = 46;
+            offset[1] = 1;
+            break;
+        case IS2_HALF_IPV4_IS_FRAG:
+            offset[0] = 47;
             offset[1] = 1;
             break;
         case IS2_HALF_IPV4_UDP_TYPE:
@@ -542,6 +547,12 @@ static void h2tcam_is2_set_ipv4_conf(h2ace_is2_t *ace_conf,tcam_data_conf_t *tca
     value[0] = 1;
     h2tcam_bit_feild_32bit_set(offset_info[0],offset_info[1],value,tcam_conf->tcam_mask);
 
+    get_offset_len_par(IS2_HALF_IPV4_IS_FRAG,offset_info);
+    value[0]=  0;
+    h2tcam_bit_feild_32bit_set(offset_info[0],offset_info[1],value,tcam_conf->tcam_entry);
+    value[0] = 1;
+    h2tcam_bit_feild_32bit_set(offset_info[0],offset_info[1],value,tcam_conf->tcam_mask);
+
     get_offset_len_par(IS2_HALF_IPV4_UDP_TYPE,offset_info);
     value[0]=(u32)(ace_conf->pkt_info.ipv4.tcp);
     h2tcam_bit_feild_32bit_set(offset_info[0],offset_info[1],value,tcam_conf->tcam_entry);
@@ -560,11 +571,13 @@ static void h2tcam_is2_set_ipv4_conf(h2ace_is2_t *ace_conf,tcam_data_conf_t *tca
     value[0] = 2;
     h2tcam_bit_feild_32bit_set(offset_info[0],offset_info[1],value,tcam_conf->tcam_mask);
 
+
     get_offset_len_par(IS2_HALF_IPV4_TWO_STEP,offset_info);
     value[0]=(u32)(ace_conf->pkt_info.ipv4.payload.ptp_payload.ptp_two_step);
     h2tcam_bit_feild_32bit_set(offset_info[0],offset_info[1],value,tcam_conf->tcam_entry);
     value[0] = 1;
     h2tcam_bit_feild_32bit_set(offset_info[0],offset_info[1],value,tcam_conf->tcam_mask);
+
 }
 static void h2tcam_is2_set_eth_conf(h2ace_is2_t *ace_conf,tcam_data_conf_t *tcam_conf)
 {

@@ -31,7 +31,7 @@
 #define UNMANAGED_FLOW_CTRL_IF
 
 /* Enable debug for TCAM */
-#define UNMANAGED_TCAM_DEBUG_IF                 0 
+#define UNMANAGED_TCAM_DEBUG_IF                 0
 
 /* Enable debug for ANEG disabled and forced 1Gfdx speed for SGMII/SERDES interface
  * MUST set value =0x2 or 0x9 for CPORT_MAPTO_MIIMBUS accoringly
@@ -91,10 +91,10 @@
 
 
 /****************************************************************************
- * End to End Transparent clock 
+ * One-step End to End Transparent clock
  ****************************************************************************/
-#define TRANSIT_E2ETC                           0
-#define TRANSIT_TCAM_IS2                        0
+#define TRANSIT_E2ETC                           1
+#define TRANSIT_TCAM_IS2                        1
 
 
 /****************************************************************************
