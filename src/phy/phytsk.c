@@ -226,35 +226,6 @@ static void phy_init (void)
     u16 reg_val;
 
     delay(MSEC_30);
-
-#if defined(LUTON26_L25)
-    phy_pre_reset(0);
-    phy_pre_reset(12);
-    if (phy_map(25)) { //using MDC/MDIO
-        phy_pre_reset(25); /*L25, port25 uses external single */
-    }
-
-#elif defined(LUTON26_L16)
-    phy_pre_reset(0);
-#ifdef LUTON26_L16_QSGMII_EXT_PHY
-    phy_pre_reset(12);
-#endif /* LUTON26_L16_QSGMII_EXT_PHY */
-
-#elif defined(LUTON26_L10)
-    phy_pre_reset(0);
-    if (phy_map(24)) {//using MDC/MDIO
-        phy_pre_reset(24); /* L10, port24 uses external single  PHY */
-    }
-    if (phy_map(25)) {//using MDC/MDIO
-        phy_pre_reset(25); /* L10, port25 uses external single PHY*/
-    }
-#endif // LUTON26_L25
-
-
-#if defined(LUTON26_L25)
-    phy_page_std(12);
-#endif
-
 #if defined(FERRET_F11) || defined(FERRET_F10P)|| defined(FERRET_F5) || defined(FERRET_F4P)
     // Reset PHY when using multiple PHY types
     phy_pre_reset(0);
@@ -336,12 +307,6 @@ static void phy_init (void)
 #if TRANSIT_FAN_CONTROL || TRANSIT_THERMAL
     phy_init_temp_mode_regs(0);
 #endif // TRANSIT_FAN_CONTROL || TRANSIT_THERMAL
-
-#if defined(LUTON26_L25)
-#if TRANSIT_FAN_CONTROL || TRANSIT_THERMAL
-    phy_init_temp_mode_regs(12);
-#endif // TRANSIT_FAN_CONTROL || TRANSIT_THERMAL
-#endif
 }
 
 static void _sfp_tx_disable_set(vtss_cport_no_t chip_port, BOOL is_disable)
