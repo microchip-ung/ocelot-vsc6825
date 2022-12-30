@@ -21,9 +21,11 @@
 #include "lldp.h"
 
 #if defined(VTSS_ARCH_OCELOT)
-#if TRANSIT_LLDP || TRANSIT_LACP
+#if TRANSIT_LLDP
 #define __BASIC_TX_RX__ 1
+#if TRANSIT_LACP
 #include "vtss_lacp.h"
+#endif
 #else
 #define __BASIC_TX_RX__ 0
 #endif

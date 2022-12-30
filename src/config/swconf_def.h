@@ -165,6 +165,8 @@
  ****************************************************************************/
 #ifndef TRANSIT_LLDP
 #define TRANSIT_LLDP                            0
+#else
+#define TRANSIT_LLDP_REDUCED                    1
 #endif
 
 #ifndef TRANSIT_LLDP_REDUCED
