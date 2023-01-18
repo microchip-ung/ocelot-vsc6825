@@ -308,7 +308,7 @@ void uart_put_byte (uchar ch) small
 }
 
 /* ************************************************************************ */
-#if !defined(NDEBUG) || (TRANSIT_LLDP && !TRANSIT_LLDP_REDUCED)
+#if !defined(NDEBUG)
 void uart_redirect (uchar xdata *ptr) small
 /* ------------------------------------------------------------------------ --
  * Purpose     : Request uart driver to redirect output to the specified
@@ -325,6 +325,6 @@ void uart_redirect (uchar xdata *ptr) small
     }
     redir_ptr = ptr;
 }
-#endif /* !defined(NDEBUG) || (TRANSIT_LLDP && !TRANSIT_LLDP_REDUCED) */
+#endif /* !defined(NDEBUG) */
 
 #endif /* NO_DEBUG_IF */

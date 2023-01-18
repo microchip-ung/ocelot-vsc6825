@@ -8,7 +8,7 @@
  *
  * Normally, all features should be disabled by default.
  * Refer to the project configured file under directory src/config/proj_opt/
- * It lists the featues which you want to enable, i.e. proj_opt_ferret_develop.h
+ * It lists the featues which you want to enable, i.e. proj_opt_ferret_release.h
  *
  * ==========================================================================/
  
@@ -165,14 +165,7 @@
  ****************************************************************************/
 #ifndef TRANSIT_LLDP
 #define TRANSIT_LLDP                            0
-#else
-#define TRANSIT_LLDP_REDUCED                    1
 #endif
-
-#ifndef TRANSIT_LLDP_REDUCED
-#define TRANSIT_LLDP_REDUCED                    0
-#endif
-
 
 /****************************************************************************
  * EEE
@@ -305,7 +298,6 @@
 #define TRANSIT_SNMP                            0   /* Not implemented yet */
 #endif
 
-
 /****************************************************************************
  * Enable the switch initial procedure based on verification team's source code
  ****************************************************************************/
@@ -327,13 +319,6 @@
     #error "Require TRANSIT_UNMANAGED_SYS_MAC_CONF"
     #endif
 #endif // TRANSIT_LACP
-
-// LLDP
-#if TRANSIT_LLDP_REDUCED
-    #if TRANSIT_LLDP == 0
-    #error "Require TRANSIT_LLDP"
-    #endif
-#endif // TRANSIT_LLDP_REDUCED
 
 // EEE
 #if TRANSIT_EEE_LLDP

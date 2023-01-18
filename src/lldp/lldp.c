@@ -486,9 +486,6 @@ static lldp_bool_t validate_tlv (lldp_u8_t xdata * tlv)
 static lldp_bool_t validate_lldpdu (lldp_sm_t xdata * sm, lldp_rx_remote_entry_t xdata * rx_entry)
 {
     lldp_u8_t xdata * tlv;
-#if !TRANSIT_LLDP_REDUCED
-    lldp_u8_t xdata * tmp_ptr;
-#endif
     lldp_u16_t len;
     lldp_u8_t tlv_no;
     lldp_u8_t tlv_type;
@@ -595,55 +592,6 @@ static lldp_bool_t validate_lldpdu (lldp_sm_t xdata * sm, lldp_rx_remote_entry_t
         ** chassis id, port id or ttl
         */
         switch(tlv_type) {
-#if !TRANSIT_LLDP_REDUCED
-        case LLDP_TLV_BASIC_MGMT_PORT_DESCR:
-            rx_entry->port_description_length = len;
-            rx_entry->port_description = &tlv[2];
-            break;
-
-        case LLDP_TLV_BASIC_MGMT_SYSTEM_NAME:
-            rx_entry->system_name_length = len;
-            rx_entry->system_name = &tlv[2];
-            break;
-
-        case LLDP_TLV_BASIC_MGMT_SYSTEM_DESCR:
-            rx_entry->system_description_length = len;
-            rx_entry->system_description = &tlv[2];
-            break;
-
-        case LLDP_TLV_BASIC_MGMT_SYSTEM_CAPA:
-            if(len == 4) {
-                memcpy(rx_entry->system_capabilities, &tlv[2], 4);
-            } else {
-                bad_lldpdu(sm);
-                return LLDP_FALSE;
-            }
-            break;
-
-        case LLDP_TLV_BASIC_MGMT_MGMT_ADDR:
-            if((8 < len) && (len < 168)) {
-                rx_entry->mgmt_address_subtype = tlv[3];
-                if((1 < tlv[2]) && (tlv[2] < 34)) {
-                    rx_entry->mgmt_address_length = tlv[2] - 1;
-                    rx_entry->mgmt_address = &tlv[4];
-                } else {
-                    bad_lldpdu(sm);
-                    return LLDP_FALSE;
-                }
-
-                tmp_ptr = tlv + 3 + tlv[2]; //??? What is this?
-
-                rx_entry->mgmt_address_if_number_subtype = tmp_ptr[0];
-                rx_entry->mgmt_address_if_number = &tmp_ptr[1];
-
-                rx_entry->oid_length = tmp_ptr[5];
-                rx_entry->oid = &tmp_ptr[6];
-            } else {
-                bad_lldpdu(sm);
-                return LLDP_FALSE;
-            }
-            break;
-#endif
         case LLDP_TLV_BASIC_MGMT_END_OF_LLDPDU:
             /* end validation thing immediately */
             if (sm->rx.badFrame == LLDP_TRUE) { //During TLVs parsing process, having TLV not supported, then return FALSE for state machine transition

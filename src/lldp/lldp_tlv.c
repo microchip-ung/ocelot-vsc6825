@@ -95,34 +95,6 @@ lldp_u16_t lldp_tlv_add (lldp_u8_t xdata * buf, lldp_u16_t cur_len, lldp_tlv_t t
         tlv_info_len = append_end_of_pdu();
         break;
 
-#if !TRANSIT_LLDP_REDUCED
-    case LLDP_TLV_BASIC_MGMT_PORT_DESCR:
-        tlv_info_len = append_port_descr(buf + 2, port);
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_SYSTEM_NAME:
-        tlv_info_len = append_system_name(buf + 2);
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_SYSTEM_DESCR:
-        tlv_info_len = append_system_descr(buf + 2);
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_SYSTEM_CAPA:
-        tlv_info_len = append_system_capabilities(buf + 2);
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_MGMT_ADDR:
-        /* we only include the IP mgmt address if IP is enabled */
-        if(lldp_os_get_ip_enabled()) {
-            tlv_info_len = append_mgmt_address(buf + 2, port);
-        } else {
-            /* not included, return current length */
-            return cur_len;
-        }
-        break;
-#endif
-
 #if TRANSIT_EEE_LLDP
     case LLDP_TLV_ORG_EEE_TLV:
         /* we only include the 802.3az information when PHY is supported. */
@@ -228,78 +200,6 @@ static lldp_u16_t append_end_of_pdu (void)
 {
     return 0;
 }
-
-#if !TRANSIT_LLDP_REDUCED
-static lldp_u16_t append_port_descr (lldp_u8_t xdata * buf, lldp_port_t port)
-{
-    lldp_tlv_get_port_descr(port, buf);
-    return strlen(buf);
-}
-
-static lldp_u16_t append_system_name (lldp_u8_t xdata * buf)
-{
-    lldp_tlv_get_system_name(buf);
-    return strlen(buf);
-}
-
-static lldp_u16_t append_system_descr (lldp_u8_t xdata * buf)
-{
-    lldp_tlv_get_system_descr(buf);
-    return strlen(buf);
-}
-
-static lldp_u16_t append_system_capabilities (lldp_u8_t xdata * buf)
-{
-    /*
-    ** The Microchip implementation of LLDP always (at least at the time of writing)
-    ** runs on a bridge (that has bridging enabled)
-    */
-    buf[0] = 0;
-    buf[1] = 4;
-    buf[2] = 0;
-    buf[3] = 4;
-    return 4;
-}
-
-static lldp_u16_t append_mgmt_address (lldp_u8_t xdata * buf, lldp_port_t port)
-{
-    lldp_u32_t mgmt_if_index = mib_common_get_ip_if_index();
-    /* we receive a port parameter even though we don't care about it here
-    ** (more exotic future implementations might have management addresses
-    ** per-vlan, so the port is included to support this in some sense.
-    */
-    port = port;
-
-    /* management address length = length(subtype + address) */
-    buf[0] = 5;
-
-    /* management address subtype */
-    buf[1] = 1; /* IPv4 */
-
-    /* IPv4 Address */
-    lldp_os_get_ip_address(&buf[2]);
-
-    /* Interface Numbering subtype */
-    buf[6] = 2; /* ifIndex */
-
-    /* Interface number */
-    buf[7]  = (mgmt_if_index >> 24) & 0xFF;
-    buf[8]  = (mgmt_if_index >> 16) & 0xFF;
-    buf[9]  = (mgmt_if_index >>  8) & 0xFF;
-    buf[10] = (mgmt_if_index >>  0) & 0xFF;
-
-    /* OID Length */
-    buf[11] = 0;
-
-    /* if this function changes, make sure to update the lldp_tlv_mgmt_addr_len()
-    ** function with the correct value: (from the MIB definition)
-    ** "The total length of the management address subtype and the
-    ** management address fields in LLDPDUs transmitted by the
-    ** local LLDP agent."
-    */
-    return 12;
-}
-#endif
 
 #if TRANSIT_EEE_LLDP
 static lldp_u16_t append_eee_l2_capability (lldp_u8_t xdata * buf, lldp_port_t port)

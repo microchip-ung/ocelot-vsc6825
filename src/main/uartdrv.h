@@ -15,9 +15,9 @@ extern bit uart_rx_buf_overrun;
 
 void  uart_init (void) small;
 void  uart_interrupt (void) small;
-#if !defined(NDEBUG) || (TRANSIT_LLDP && !TRANSIT_LLDP_REDUCED)
+#if !defined(NDEBUG)
 void  uart_redirect (uchar xdata *ptr) small;
-#endif /* !defined(NDEBUG) || (TRANSIT_LLDP && !TRANSIT_LLDP_REDUCED) */
+#endif /* !defined(NDEBUG) */
 void  uart_interrupt (void) small;
 bool  uart_byte_ready (void) small;
 uchar uart_get_byte (void) small;

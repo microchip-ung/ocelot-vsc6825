@@ -144,29 +144,6 @@ void lldp_os_set_tx_in_progress (lldp_bool_t tx_in_progress)
 }
 #endif
 
-#if !TRANSIT_LLDP_REDUCED
-void lldp_os_get_if_descr (lldp_port_t port, lldp_u8_t xdata * dest)
-{
-    mib_common_get_if_descr(port, dest);
-}
-
-void lldp_os_get_system_name (lldp_u8_t xdata * dest)
-{
-    strcpy(dest, txt_TXT_NO_SWITCH_NAME);
-}
-
-void lldp_os_get_system_descr (lldp_u8_t xdata * dest)
-{
-    mib_common_get_sys_descr(dest);
-}
-
-
-void lldp_os_get_ip_address (lldp_u8_t xdata * dest)
-{
-    memset(dest, 0, 4);
-}
-#endif
-
 void lldp_os_set_optional_tlv (lldp_u8_t tlv, lldp_u8_t enabled)
 {
     /* perform read-modify-write operation */
@@ -196,13 +173,6 @@ lldp_u8_t lldp_os_get_optional_tlv_enabled (lldp_u8_t tlv)
         tlv -= 4;
     return test_bit_16(tlv, &tlv_enabled);
 }
-
-#if !TRANSIT_LLDP_REDUCED
-lldp_u8_t lldp_os_get_ip_enabled (void)
-{
-    return FALSE;
-}
-#endif
 
 /* send a frame on external port number */
 void lldp_os_tx_frame (lldp_port_t port_no, lldp_u8_t xdata * frame, lldp_u16_t len)

@@ -282,18 +282,9 @@ void lldp_remote_tlv_to_string (lldp_remote_entry_t xdata * entry, lldp_u8_t fie
 {
     lldp_u8_t xdata * p = 0;
     lldp_u8_t len = 0;
-#if !TRANSIT_LLDP_REDUCED
-    lldp_u16_t capa;
-    lldp_u16_t capa_ena;
-    lldp_u8_t bit_no;
-#endif
-
     const char * sys_capa[] = {"Other", "Repeater", "Bridge", "WLAN Access Point", "Router", "Telephone", "DOCSIS cable device", "Station Only"};
     lldp_bool_t print_comma = LLDP_FALSE;
 
-#if !TRANSIT_LLDP_REDUCED
-    uart_redirect(dest);
-#endif /* !TRANSIT_LLDP_REDUCED */
     switch(field) {
     case LLDP_TLV_BASIC_MGMT_CHASSIS_ID:
         remote_chassis_id_to_string(entry);
@@ -302,68 +293,6 @@ void lldp_remote_tlv_to_string (lldp_remote_entry_t xdata * entry, lldp_u8_t fie
     case LLDP_TLV_BASIC_MGMT_PORT_ID:
         remote_port_id_to_string(entry);
         break;
-#if !TRANSIT_LLDP_REDUCED
-    case LLDP_TLV_BASIC_MGMT_PORT_DESCR:
-        len = MIN(entry->port_description_length, MAX_PORT_DESCR_LENGTH);
-        p = entry->port_description;
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_SYSTEM_NAME:
-        len = MIN(entry->system_name_length, MAX_SYSTEM_NAME_LENGTH);
-        p = entry->system_name;
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_SYSTEM_DESCR:
-        len = MIN(entry->system_description_length, MAX_SYSTEM_DESCR_LENGTH);
-        p = entry->system_description;
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_SYSTEM_CAPA:
-        capa     = ((lldp_u16_t)entry->system_capabilities[0]) << 8 | entry->system_capabilities[1];
-        capa_ena = ((lldp_u16_t)entry->system_capabilities[2]) << 8 | entry->system_capabilities[3];
-
-        for(bit_no = 0; bit_no <= 7; bit_no++) {
-            if(capa & (1<<bit_no)) {
-                if(print_comma) {
-                    print_ch(',');
-                    print_spaces(1);
-                }
-                print_comma = LLDP_TRUE;
-                print_str(sys_capa[bit_no]);
-                /* print enabled/disabled indicaion */
-                print_ch('(');
-                if(capa_ena & (1<<bit_no)) {
-                    print_ch('+');
-                } else {
-                    print_ch('-');
-                }
-                print_ch(')');
-            }
-        }
-        break;
-
-    case LLDP_TLV_BASIC_MGMT_MGMT_ADDR:
-        switch(entry->mgmt_address_subtype) {
-        case 1: /* ipv4 */
-            print_ip_addr(entry->mgmt_address);
-            break;
-
-        default:
-            if(string_is_printable(entry->mgmt_address, entry->mgmt_address_length)) {
-                print_characters(entry->mgmt_address, entry->mgmt_address_length);
-            } else {
-                print_hex_value(entry->mgmt_address, entry->mgmt_address_length);
-            }
-            break;
-        }
-
-        if(entry->mgmt_address_length > 0) {
-            print_spaces(2);
-            print_mgmt_addr_type(entry);
-        }
-        break;
-#endif
-
 #if UNMANAGED_EEE_DEBUG_IF
     case LLDP_TLV_ORG_EEE_TLV:
         if(entry->is_eee) {
@@ -388,16 +317,10 @@ void lldp_remote_tlv_to_string (lldp_remote_entry_t xdata * entry, lldp_u8_t fie
             print_hex_value(p, len);
         }
     }
-#if !TRANSIT_LLDP_REDUCED
-    uart_redirect(0);
-#endif /* !TRANSIT_LLDP_REDUCED */
 }
 
 void lldp_chassis_type_to_string (lldp_remote_entry_t xdata * entry, lldp_u8_t xdata * dest)
 {
-#if !TRANSIT_LLDP_REDUCED
-    uart_redirect(dest);
-#endif /* !TRANSIT_LLDP_REDUCED */
     switch(entry->chassis_id_subtype) {
     case 1: /* entPhyClass = port(10) | backplane(4) */
     case 3: /* entPhyClass = chassis(3) */
@@ -419,16 +342,10 @@ void lldp_chassis_type_to_string (lldp_remote_entry_t xdata * entry, lldp_u8_t x
         print_str("local");
         break;
     }
-#if !TRANSIT_LLDP_REDUCED
-    uart_redirect(0);
-#endif /* !TRANSIT_LLDP_REDUCED */
 }
 
 void lldp_port_type_to_string (lldp_remote_entry_t xdata * entry, lldp_u8_t xdata * dest)
 {
-#if !TRANSIT_LLDP_REDUCED
-    uart_redirect(dest);
-#endif /* !TRANSIT_LLDP_REDUCED */
     switch(entry->port_id_subtype) {
     case 1:
         print_str("ifAlias");
@@ -452,9 +369,6 @@ void lldp_port_type_to_string (lldp_remote_entry_t xdata * entry, lldp_u8_t xdat
         print_str("local");
         break;
     }
-#if !TRANSIT_LLDP_REDUCED
-    uart_redirect(0);
-#endif /* !TRANSIT_LLDP_REDUCED */
 }
 
 #if 0
@@ -521,74 +435,6 @@ lldp_remote_entry_t xdata * lldp_remote_get_next_non_zero_addr (lldp_u32_t time_
     } else {
         return &remote_entries[idx];
     }
-}
-#endif
-
-#if !TRANSIT_LLDP_REDUCED
-static void print_mgmt_addr_type (lldp_remote_entry_t xdata * entry)
-{
-    /* from http://www.iana.org/assignments/address-family-numbers
-       Number    Description                                          Reference
-       ------    ---------------------------------------------------- ---------
-       0    Reserved
-       1    IP (IP version 4)
-       2    IP6 (IP version 6)
-       3    NSAP
-       4    HDLC (8-bit multidrop)
-       5    BBN 1822
-       6    802 (includes all 802 media plus Ethernet "canonical format")
-       7    E.163
-       8    E.164 (SMDS, Frame Relay, ATM)
-       9    F.69 (Telex)
-       10    X.121 (X.25, Frame Relay)
-       11    IPX
-       12    Appletalk
-       13    Decnet IV
-       14    Banyan Vines
-       15    E.164 with NSAP format subaddress           [UNI-3.1] [Malis]
-       16    DNS (Domain Name System)
-       17    Distinguished Name                                    [Lynn]
-       18    AS Number                                             [Lynn]
-       19    XTP over IP version 4                                 [Saul]
-       20    XTP over IP version 6                                 [Saul]
-       21    XTP native mode XTP                                   [Saul]
-       22    Fibre Channel World-Wide Port Name                   [Bakke]
-       23    Fibre Channel World-Wide Node Name                   [Bakke]
-       24    GWID                                                 [Hegde]
-       65535    Reserved
-    */
-    /* we support the following subset of these... */
-    print_ch('(');
-    switch(entry->mgmt_address_subtype) {
-    case 1:
-        print_str("IPv4");
-        break;
-    case 2:
-        print_str("IPv6");
-        break;
-    case 3:
-        print_str("NSAP");
-        break;
-    case 6:
-        print_str("802");
-        break;
-    case 11:
-        print_str("IPX");
-        break;
-    case 12:
-        print_str("Appletalk");
-        break;
-    case 16:
-        print_str("DNS");
-        break;
-    case 17:
-        print_str("Distinguished Name");
-        break;
-    default:
-        print_str("Other");
-        break;
-    }
-    print_ch(')');
 }
 #endif
 
@@ -722,33 +568,6 @@ static void update_entry (lldp_rx_remote_entry_t xdata * rx_entry, lldp_remote_e
     memcpy(entry->port_id, rx_entry->port_id, MIN(rx_entry->port_id_length, MAX_PORT_ID_LENGTH));
     entry->port_id[MAX_PORT_ID_LENGTH] = '\0';
 
-#if !TRANSIT_LLDP_REDUCED
-    entry->port_description_length = rx_entry->port_description_length;
-    memcpy(entry->port_description, rx_entry->port_description, MIN(rx_entry->port_description_length, MAX_PORT_DESCR_LENGTH));
-    entry->port_description[MAX_PORT_DESCR_LENGTH] = '\0';
-
-    entry->system_name_length = rx_entry->system_name_length;
-    memcpy(entry->system_name, rx_entry->system_name, MIN(rx_entry->system_name_length, MAX_SYSTEM_NAME_LENGTH));
-    entry->system_name[MAX_SYSTEM_NAME_LENGTH] = '\0';
-
-    entry->system_description_length = rx_entry->system_description_length;
-    memcpy(entry->system_description, rx_entry->system_description, MIN(rx_entry->system_description_length, MAX_SYSTEM_DESCR_LENGTH));
-    entry->system_description[MAX_SYSTEM_DESCR_LENGTH] = '\0';
-
-    memcpy(entry->system_capabilities, rx_entry->system_capabilities, sizeof(entry->system_capabilities));
-
-    entry->mgmt_address_subtype = rx_entry->mgmt_address_subtype;
-    entry->mgmt_address_length = rx_entry->mgmt_address_length;
-    memcpy(entry->mgmt_address, rx_entry->mgmt_address, rx_entry->mgmt_address_length);
-    entry->mgmt_address_if_number_subtype = rx_entry->mgmt_address_if_number_subtype;
-
-    memcpy(entry->mgmt_address_if_number, rx_entry->mgmt_address_if_number, sizeof(entry->mgmt_address_if_number));
-
-    entry->oid_length = rx_entry->oid_length;
-    memcpy(entry->oid, rx_entry->oid, MIN(rx_entry->oid_length, sizeof(entry->oid)));
-    rx_entry->oid[MAX_MGMT_OID_LENGTH] = '\0';
-#endif
-
 #if TRANSIT_EEE_LLDP
     if(entry->mgmt_ieee_subtype != rx_entry->mgmt_ieee_subtype) {
         entry->mgmt_ieee_subtype = rx_entry->mgmt_ieee_subtype;
@@ -789,81 +608,6 @@ static lldp_bool_t update_neccessary (lldp_rx_remote_entry_t xdata * rx_entry, l
         VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- Receive port"));
         return LLDP_TRUE;
     }
-
-#if !TRANSIT_LLDP_REDUCED
-    if(rx_entry->port_description_length != entry->port_description_length) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- Port descr. len"));
-        return LLDP_TRUE;
-    }
-
-    if(rx_entry->system_name_length != entry->system_name_length) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- Sys name len"));
-        return LLDP_TRUE;
-    }
-
-    if(rx_entry->system_description_length != entry->system_description_length) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- Sys descr len"));
-        return LLDP_TRUE;
-    }
-
-
-    if(rx_entry->mgmt_address_subtype != entry->mgmt_address_subtype) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- mgmt addr subtype"));
-        return LLDP_TRUE;
-    }
-
-    if(rx_entry->mgmt_address_length != entry->mgmt_address_length) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- mgmt addr len"));
-        return LLDP_TRUE;
-    }
-
-    if(rx_entry->mgmt_address_if_number_subtype != entry->mgmt_address_if_number_subtype) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- mgmt addr ifnnumber subtype"));
-        return LLDP_TRUE;
-    }
-
-    if(rx_entry->oid_length != entry->oid_length) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- oid len"));
-        return LLDP_TRUE;
-    }
-
-
-    /* now check with memcmps */
-    if(memcmp(rx_entry->port_description, entry->port_description, rx_entry->port_description_length) != 0) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- port descr"));
-        return LLDP_TRUE;
-    }
-
-    if(memcmp(rx_entry->system_name, entry->system_name, rx_entry->system_name_length) != 0) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- sys name"));
-        return LLDP_TRUE;
-    }
-
-    if(memcmp(rx_entry->system_description, entry->system_description, rx_entry->system_description_length) != 0) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- sys descr"));
-        return LLDP_TRUE;
-    }
-
-    if(memcmp(rx_entry->system_capabilities, entry->system_capabilities, sizeof(entry->system_capabilities)) != 0) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- sys capa"));
-        return LLDP_TRUE;
-    }
-
-    if(memcmp(rx_entry->mgmt_address, entry->mgmt_address, rx_entry->mgmt_address_length) != 0) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- mgmt addr"));
-        return LLDP_TRUE;
-    }
-
-    if(memcmp(rx_entry->mgmt_address_if_number, entry->mgmt_address_if_number, sizeof(entry->mgmt_address_if_number)) != 0) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- mgmt addr ifnum"));
-        return LLDP_TRUE;
-    }
-
-    if(memcmp(rx_entry->oid, entry->oid, rx_entry->oid_length) != 0) {
-        VTSS_COMMON_TRACE(VTSS_COMMON_TRLVL_DEBUG, ("- oid"));
-        return LLDP_TRUE;
-    }
-#endif
 
 #if TRANSIT_EEE_LLDP
     if(entry->mgmt_ieee_subtype != rx_entry->mgmt_ieee_subtype) {

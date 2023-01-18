@@ -37,27 +37,6 @@ typedef struct {
     lldp_u8_t      port_id_length;
     lldp_u8_t      port_id[MAX_PORT_ID_LENGTH + 1];
 
-#if !TRANSIT_LLDP_REDUCED
-    lldp_u8_t      port_description_length;
-    lldp_u8_t      port_description[MAX_PORT_DESCR_LENGTH + 1];
-
-    lldp_u8_t      system_name_length;
-    lldp_u8_t      system_name[MAX_SYSTEM_NAME_LENGTH + 1];
-
-    lldp_u8_t      system_description_length;
-    lldp_u8_t      system_description[MAX_SYSTEM_DESCR_LENGTH + 1];
-
-    lldp_u8_t      system_capabilities[4];
-
-    lldp_u8_t      mgmt_address_subtype;
-    lldp_u8_t      mgmt_address_length;
-    lldp_u8_t      mgmt_address[31];
-    lldp_u8_t      mgmt_address_if_number_subtype;
-    lldp_u8_t      mgmt_address_if_number[4];
-    lldp_u8_t      oid_length;
-    lldp_u8_t      oid[MAX_MGMT_OID_LENGTH + 1]; /* we don't support OID's up to 128 bytes */
-#endif
-
     lldp_u16_t     rx_info_ttl;
 #if TRANSIT_EEE_LLDP
     lldp_u8_t     is_eee;
@@ -85,26 +64,6 @@ typedef struct {
     lldp_u8_t      port_id_length;
     lldp_u8_t xdata * port_id;
 
-#if !TRANSIT_LLDP_REDUCED
-    lldp_u8_t      port_description_length;
-    lldp_u8_t xdata * port_description;
-
-    lldp_u8_t      system_name_length;
-    lldp_u8_t xdata * system_name;
-
-    lldp_u8_t      system_description_length;
-    lldp_u8_t xdata * system_description;
-
-    lldp_u8_t     system_capabilities[4];
-
-    lldp_u8_t      mgmt_address_subtype;
-    lldp_u8_t      mgmt_address_length;
-    lldp_u8_t xdata * mgmt_address;
-    lldp_u8_t      mgmt_address_if_number_subtype;
-    lldp_u8_t xdata * mgmt_address_if_number;
-    lldp_u8_t      oid_length;
-    lldp_u8_t xdata * oid; /* we don't support OID's up to 128 bytes */
-#endif
     lldp_u16_t     ttl;
 
 #if TRANSIT_EEE_LLDP
