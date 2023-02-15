@@ -11,6 +11,8 @@
 #include "phy_base.h"
 #include "phy_family.h"
 
+#include "h2pcs1g.h"  // MAC_IF_EXTERNAL
+
 #define PHY_DEBUG (0)
 
 #if VTSS_TESLA
@@ -1062,7 +1064,7 @@ static vtss_rc vtss_phy_rd_wr_masked(BOOL                 read,
 
 /* Write PHY register */
 // See comment at the do_page_chk
-vtss_rc vtss_phy_wr_page(const vtss_port_no_t port_no,
+static vtss_rc vtss_phy_wr_page(const vtss_port_no_t port_no,
                          const u16            page,
                          const u32            addr,
                          const u16            value)
@@ -1545,7 +1547,9 @@ vtss_rc tesla_init_seq(
     vtss_port_no_t          port_no,
     phy_id_t                *phy_id
 ) {
-    return atom12_init_seq(port_no, phy_id);
+	  // This only does something for revision A, so try to get away without it
+    // return atom12_init_seq(port_no, phy_id);
+		return VTSS_RC_OK;
 }
 
 
@@ -1691,20 +1695,6 @@ vtss_rc tesla_mac_media_if_setup (
 
     return VTSS_RC_OK;
 }
-
-
-vtss_rc tesla_read_temp_reg(
-    vtss_port_no_t  port_no,
-    ushort          *temp
-)
-{
-#if PHY_DEBUG
-    println_str("tesla_read_temp_reg");
-#endif
-    *temp = vtss_phy_read_temp(port_no);
-    return VTSS_RC_OK;
-}
-
 
 #endif // TESLA
 
